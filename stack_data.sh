@@ -8,10 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-n_sub=15
-dim=10
+n_sub=17
+dim=50
 # ------------------------------------------------------------------------------
-# for dim in 15; do
 
 # Dependencies
 nets=networks_of_interest.txt
@@ -29,12 +28,12 @@ for n in `cat ${melpath}/${nets} | awk '{print $1}'`; do
     component_no=$(( ${n}-1 ))
     component_no=`printf %04d ${component_no}`
     ls ${drfolder}/dr_stage2_ic${component_no}.nii.gz
-
+    
     # Make a copy of the network of interest dataset
     copy_job=`fsl_sub \
-        scp ${drfolder}/dr_stage2_ic${component_no}.nii.gz \
-        ${drfolder}/stacked/Data_ic${component_no}.nii.gz`
-
+    scp ${drfolder}/dr_stage2_ic${component_no}.nii.gz \
+    ${drfolder}/stacked/Data_ic${component_no}.nii.gz`
+    
     # For each component:
     # Generate a pre dataset
     # Generate a post dataset
@@ -55,7 +54,7 @@ for n in `cat ${melpath}/${nets} | awk '{print $1}'`; do
         merge_job=`fsl_sub -j ${roi_job} fslmerge -t ${drfolder}/stacked/Data_network${n}_"acq-${ACQ}".nii.gz \
         ${drfolder}/stacked/Data_ic${component_no}_"acq-${ACQ}"_scan*.nii.gz`
     done
-
+    
     # Subtract the pre dataset from the post dataset to get the diff dataset
     fsl_sub -j ${merge_job} -m abe fslmaths ${drfolder}/stacked//Data_network${n}_acq-2.nii.gz \
     -sub ${drfolder}/stacked/Data_network${n}_acq-1.nii.gz \
@@ -65,4 +64,3 @@ done
 # Generate a list of every subject that was used to run the melodic and dual_regressions
 subjects=${inputs%*.txt}_subjectlist.txt
 cat ${inputs} | grep -o "sub.*" | awk -F/ '{print $1}' | uniq > ${subjects}
-# done

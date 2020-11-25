@@ -11,7 +11,7 @@
 MNIstandard=/opt/fmrib/fsl/data/standard/MNI152_T1_2mm_brain_mask.nii.gz # Path to MNIstandard
 # ------------------------------------------------------------------------------
 # Options
-dim=25 # Choose from: AUTO 50 25 15 10
+dim=50
 wait_for_job=309039
 # ------------------------------------------------------------------------------
 
